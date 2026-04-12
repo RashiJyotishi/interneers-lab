@@ -1,12 +1,14 @@
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django_app.adapters.repositories.mongo_product_repository import MongoProductRepository
 from django_app.core.services.product_service import ProductService
 from django_app.adapters.repositories.in_memory_product_repository import InMemoryProductRepository
 from dataclasses import asdict
 
 # Wire up once (in real apps this is done via dependency injection)
-repository = InMemoryProductRepository()
+# repository = InMemoryProductRepository()
+repository = MongoProductRepository()
 service = ProductService(repository)
 
 @csrf_exempt

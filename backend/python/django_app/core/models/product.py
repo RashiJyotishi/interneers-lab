@@ -1,4 +1,4 @@
-import uuid
+# import uuid
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -10,4 +10,4 @@ class Product:
     price: float
     brand: str
     quantity: int
-    id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    id: Optional[str] = None
