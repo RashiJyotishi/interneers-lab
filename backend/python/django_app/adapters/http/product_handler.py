@@ -48,3 +48,48 @@ def product_detail(request, product_id):
         if not deleted:
             return JsonResponse({'error': 'Product not found'}, status=404)
         return JsonResponse({}, status=204)
+
+@csrf_exempt
+def products_by_category(request, category_id):
+    """GET /categories/<id>/products/"""
+    if request.method == 'GET':
+        products = service.get_products_by_category(category_id)
+        return JsonResponse([asdict(p) for p in products], safe=False, status=200)
+
+@csrf_exempt
+def product_category_assign(request, product_id):
+    """POST /products/<id>/category/  — assign category
+       DELETE /products/<id>/category/ — remove category"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            product = service.assign_category(product_id, data['category_id'])
+            if not product:
+                return JsonResponse({'error': 'Product not found'}, status=404)
+            return JsonResponse(asdict(product), status=200)
+        except ValueError as e:
+            return JsonResponse({'errors': e.args[0]}, status=400)
+
+    elif request.method == 'DELETE':
+        product = service.remove_category(product_id)
+        if not product:
+            return JsonResponse({'error': 'Product not found'}, status=404)
+        return JsonResponse(asdict(product), status=200)
+
+@csrf_exempt
+def bulk_create_products(request):
+    """POST /products/bulk/ — accepts CSV file"""
+    if request.method == 'POST':
+        try:
+            csv_file = request.FILES.get('file')
+            if not csv_file:
+                return JsonResponse({'error': 'No file provided'}, status=400)
+            csv_content = csv_file.read().decode('utf-8')
+            products = service.bulk_create_from_csv(csv_content)
+            return JsonResponse(
+                {'created': len(products),
+                 'products': [asdict(p) for p in products]},
+                status=201
+            )
+        except ValueError as e:
+            return JsonResponse({'errors': e.args[0]}, status=400)

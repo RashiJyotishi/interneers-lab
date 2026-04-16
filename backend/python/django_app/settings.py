@@ -79,7 +79,7 @@ load_dotenv()
 
 MONGO_USER = os.getenv("MONGO_USER", "root")
 MONGO_PASS = os.getenv("MONGO_PASS", "example")
-MONGO_PORT = os.getenv("MONGO_PORT", "27019")
+MONGO_PORT = os.getenv("MONGO_PORT", "27017")
 MONGO_HOST = os.getenv("MONGO_HOST", "localhost")
 
 CLIENT = MongoClient(

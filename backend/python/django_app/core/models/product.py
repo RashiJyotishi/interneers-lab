@@ -11,3 +11,4 @@ class Product:
     brand: str
     quantity: int
     id: Optional[str] = None
+    category_id: Optional[str] = None
