@@ -8,11 +8,17 @@ class MongoProductRepository:
 
     def _to_domain(self, doc: ProductDocument) -> Product:
         """Convert a DB document → core domain model"""
+        # print('MongoProductRepository._to_domain doc.category:', doc.category)
+
+        category_title = ''
+        if doc.category:
+            category_title = getattr(doc.category, 'title', '')
+
         return Product(
             id=str(doc.id),
             name=doc.name,
             description=doc.description or '',
-            category=doc.category or '',
+            category=category_title,
             price=doc.price,
             brand=doc.brand or '',
             quantity=doc.quantity,
